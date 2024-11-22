@@ -23,7 +23,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run clean with Maven
-        run: mvn clean
+        run: mvn clean package
 
       - name: Build Docker image
         run: docker build -t product-pipe-image .
