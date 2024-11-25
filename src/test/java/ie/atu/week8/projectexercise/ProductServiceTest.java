@@ -20,8 +20,11 @@ class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;
 
+    Product product;
+
     @BeforeEach
     void setUp() {
+        product = new Product(1L, "Laptop", "Expensive", 1500);
     }
 
     @Test
@@ -31,5 +34,33 @@ class ProductServiceTest {
         when(productRepository.save(product)).thenReturn(product);
         Product expectedProduct = productService.saveProduct(product);
         assertEquals(1350, expectedProduct.getPrice());
+    }
+
+    @Test
+    void testValidateProductFailure_NegativePrice() {
+        product.setPrice(-1500);
+        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> productService.saveProduct(product));
+        assertEquals("Price cannot be negative", iae.getMessage());
+    }
+
+    @Test
+    void testValidateProduct_EmptyName() {
+        product.setName("");
+        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> productService.saveProduct(product));
+        assertEquals("Product name cannot be empty", iae.getMessage());
+    }
+
+    @Test
+    void testValidateProduct_NullName() {
+        product.setName(null);
+        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> productService.saveProduct(product));
+        assertEquals("Product name cannot be empty", iae.getMessage());
+    }
+
+    @Test
+    void testValidateProduct_NullNameAndNegativePrice() {
+        product.setName(null);
+        product.setPrice(-1000);
+        assertThrows(IllegalArgumentException.class, () -> productService.saveProduct(product));
     }
 }
