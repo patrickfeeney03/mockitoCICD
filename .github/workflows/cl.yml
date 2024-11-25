@@ -25,6 +25,9 @@ jobs:
       - name: Run clean with Maven
         run: mvn clean package
 
+      - name: Step to run unit tests using Maven
+        run: mvn test
+
       - name: Build Docker image
         run: docker build -t product-pipe-image .
 
